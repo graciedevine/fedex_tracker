@@ -1,4 +1,8 @@
 import openpyxl
+from selenium import webdriver
+
+driver = webdriver.Firefox()
+driver.get("https://google.co.in")
 
 wb = openpyxl.load_workbook("Book5.xlsx")
 sheet = wb["Sheet1"]
@@ -30,11 +34,9 @@ def pasteRange(startCol, startRow, endCol, endRow, sheetReceiving, copiedData):
 
 
 def createData():
-    print("Processing...")
     selectedRange = copyRange(2, 2, 2, 343, sheet)
     pastingRange = pasteRange(2, 2, 2, 343, temp_sheet, selectedRange)
     template.save("test.xlsx")
-    print("Range copied and pasted!")
 
 
 createData()
