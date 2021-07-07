@@ -1,6 +1,7 @@
 A program for copying FedEx tracking numbers from a spreadsheet, looking them up on the website, and then downloading the delivery receipt. 
 
 Steps:
+
 -Copy FedEx Tracking Number from Column B in spreadsheet
 
 -Go to FedEx website
