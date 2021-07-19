@@ -9,7 +9,7 @@ import time
 exec_path = r"C:\WebDriver\bin\geckodriver.exe"
 URL = r"https://www.fedex.com/en-us/home.html"
 tracking_id_link_locator = "#HomeTrackingApp input:nth-child(1)"
-search_text = "Banana"
+search_text = "923767089915"
 
 driver = webdriver.Firefox(executable_path=exec_path)
 driver.get(URL)
@@ -20,4 +20,3 @@ input_box_element = driver.find_element_by_css_selector(tracking_id_link_locator
 input_box_element.send_keys(search_text)
 input_box_element.submit()
 # driver.quit()
-

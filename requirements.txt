@@ -1,0 +1,5 @@
+openpyxl==2.6.2
+PyAutoGUI==0.9.53
+selenium==3.141.0
+urllib3==1.26.2
+
