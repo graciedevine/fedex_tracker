@@ -4,13 +4,13 @@ from selenium.webdriver.support.ui import WebDriverWait as W
 from selenium.webdriver.support import expected_conditions as E
 from selenium.webdriver.common.action_chains import ActionChains as A
 
-exec_path = r"C:\WebDriver\bin\geckodriver.exe"
+exec_path = r"C:\WebDriver\bin\chromedriver.exe"
 URL = r"https://www.fedex.com/en-us/home.html"
 tracking_css_locator = "#HomeTrackingApp input:nth-child(1)"
 search_text = "923767089915"
 wait_time_out = 5
 
-driver = webdriver.Firefox(executable_path=exec_path)
+driver = webdriver.Chrome(executable_path=exec_path)
 wait_variable = W(driver, wait_time_out)
 driver.get(URL)
 
@@ -27,8 +27,3 @@ a = A(driver)
 a.move_to_element(track_button)
 a.click(track_button)
 a.perform()
-
-
-
-
-
