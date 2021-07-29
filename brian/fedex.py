@@ -7,16 +7,6 @@ gecko = GetGeckoDriver()
 gecko.install()
 
 
-def download_dir(directory: str = None) -> Path:
-    """Set dowload directory.
-
-    Defaults to `~/Downloads/` if no directory is given.
-    """
-    if directory is None:
-        downloads = Path.home() / "Downloads"
-    return Path(str(directory)).resolve()
-
-
 def get_driver(downloads: Path) -> webdriver:
     """Setup webdriver options.
 
@@ -43,62 +33,54 @@ def get_driver(downloads: Path) -> webdriver:
     return driver
 
 
-def open_proof_div(driver: webdriver, wait_time: int = 3) -> None:
-    """Click button to open div for requesting proof.
+def rename_file(
+    downloads: Path,
+    new_name: str,
+    old_name: str = "retrievePDF.pdf",
+    wait_time: int = 1,
+) -> None:
+    """Rename downloaded file.
 
-    Since the button is not directly addressable by css selector,
-    this loops through the buttons of the desired class and will
-    click the button that has the text "proof" in it.
+    If the file is not found, the function will wait for the file to be
+    `new_name`. Otherwise, it will print a message and exit.
     """
-    driver.implicitly_wait(wait_time)
-    buttons = driver.find_elements_by_css_selector(".eye-brow-link")
-    for button in buttons:
-        if "proof" in button.text.lower():
-            button.click()
-            break
-
-
-def click_view_pdf(driver: webdriver, wait_time: int = 1) -> None:
-    """Click button to view PDF.
-
-    Since the buttion is not directly addressable by css selector,
-    this loops through the buttons of the desired class and will
-    click the button that has the text "view pdf" in it.
-    """
-    driver.implicitly_wait(wait_time)
-    buttons = driver.find_elements_by_css_selector(".pod button")
-    for button in buttons:
-        if "view pdf" in button.text.lower():
-            button.click()
-            break
+    sleep(wait_time)
+    file = downloads / old_name
+    if file.exists():
+        file.rename(file.with_stem(new_name))
+    else:
+        print(new_name)
 
 
 def get_proof(tracking: str, downloads: Path) -> None:
     driver = get_driver(downloads)
-    driver.get(
+    url = (
         f"https://www.fedex.com/apps/fedextrack/?action=track&trackingnumber={tracking}"
     )
-    open_proof_div(driver)
-    click_view_pdf(driver)
-    driver.close()
+    driver.get(url)
 
-    sleep(1)
-    try:
-        file = downloads / "retrievePDF.pdf"
-        file.rename(file.with_stem(f"Proof_for_{tracking}"))
-    except FileNotFoundError:
-        print(tracking)
+    clicks = [
+        ('//button[@class="eye-brow-link"][contains(text(),"Proof")]', 3),
+        ('//*[@class="pod"]//button[contains(text(), "View PDF")]', 1),
+    ]
+    for xpath, wait_time in clicks:
+        driver.implicitly_wait(wait_time)
+        elem = driver.find_element_by_xpath(xpath)
+        elem.click()
+
+    driver.close()
+    rename_file(downloads, f"Proof_for_{tracking}")
+
+    # sleep(1)
+    # try:
+    #     file = downloads / "retrievePDF.pdf"
+    #     file.rename(file.with_stem(f"Proof_for_{tracking}"))
+    # except FileNotFoundError:
+    #     print(tracking)
 
 
 if __name__ == "__main__":
-    downloads = download_dir("PODs")
-    tracking_numbers = [
-        "923767089915",
-        "191476657925",
-        "191476658200",
-        "191476658174",
-        "191476658781",
-        "191480054110",
-    ]
+    downloads = Path().resolve() / "PODs"
+    tracking_numbers = ["923767089915"]
     for tracking in tracking_numbers:
         get_proof(tracking, downloads)
