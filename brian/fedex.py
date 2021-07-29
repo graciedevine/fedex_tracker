@@ -71,13 +71,6 @@ def get_proof(tracking: str, downloads: Path) -> None:
     driver.close()
     rename_file(downloads, f"Proof_for_{tracking}")
 
-    # sleep(1)
-    # try:
-    #     file = downloads / "retrievePDF.pdf"
-    #     file.rename(file.with_stem(f"Proof_for_{tracking}"))
-    # except FileNotFoundError:
-    #     print(tracking)
-
 
 if __name__ == "__main__":
     downloads = Path().resolve() / "PODs"
